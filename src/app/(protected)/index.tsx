@@ -5,9 +5,11 @@ import useStore from '~/store';
 
 export default function Home() {
   const setChannel = useStore((state) => state.setChannel);
+  const user = useStore((state) => state.user);
+
   const filter = {
     members: {
-      $in: ['14'],
+      $in: [user?.id || '14'],
     },
   };
 
