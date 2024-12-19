@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { useCreateChatClient, Chat } from 'stream-chat-expo';
+import { useCreateChatClient, Chat, MessageType } from 'stream-chat-expo';
 
 import useStore from '~/store';
 import { getStreamToken } from '~/utils/strem';
@@ -36,5 +36,9 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
     );
   }
 
-  return <Chat client={client}>{children}</Chat>;
+  return (
+    <Chat client={client} isMessageAIGenerated={(message: MessageType) => !!message.ai_generated}>
+      {children}
+    </Chat>
+  );
 }
