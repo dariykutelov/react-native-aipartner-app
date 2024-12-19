@@ -1,12 +1,23 @@
-const streamTokenProvider = async (userId: string) => {
-  const token = await fetch('https://getstream.io/token/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+import { supabase } from '~/lib/supabase';
 
-  return token;
+export const getStreamToken = async () => {
+  const { data, error } = await supabase.functions.invoke('stream-token-provider');
+  if (error) {
+    console.error('Error fetching Stream token:', error);
+    return null;
+  }
+  return data?.token;
 };
 
-export default streamTokenProvider;
+// const streamTokenProvider = async (userId: string) => {
+//   const token = await fetch('https://getstream.io/token/', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//   });
+
+//   return token;
+// };
+
+// export default streamTokenProvider;
