@@ -1,19 +1,29 @@
 import { Redirect } from 'expo-router';
-import { View } from 'react-native';
+import { useEffect } from 'react';
+import { View, ActivityIndicator } from 'react-native';
 
-import { AppleSignIn } from '~/components/authentication/AppleSignin';
 import useStore from '~/store';
 
 export default function Home() {
-  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  const session = useStore((state) => state.session);
+  const initializeAuth = useStore((state) => state.initializeAuth);
+  const isLoading = useStore((state) => state.isLoading);
 
-  if (isAuthenticated) {
-    return <Redirect href="/(protected)" />;
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator />
+      </View>
+    );
   }
 
-  return (
-    <View className="flex-1 items-center justify-center p-5">
-      <AppleSignIn />
-    </View>
-  );
+  if (!session) {
+    return <Redirect href="/(auth)/signin" />;
+  } else {
+    return <Redirect href="/(protected)" />;
+  }
 }

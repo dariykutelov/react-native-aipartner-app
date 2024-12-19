@@ -16,6 +16,7 @@ type Actions = {
   setChannel: (channel: ChannelType | null) => void;
   setSession: (session: Session | null) => void;
   initializeAuth: () => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 const useStore = create<State & Actions>((set) => ({
@@ -62,6 +63,16 @@ const useStore = create<State & Actions>((set) => ({
       console.error('Auth initialization error:', error);
       set({ isLoading: false });
     }
+  },
+
+  signOut: async () => {
+    await supabase.auth.signOut();
+    set({
+      session: null,
+      user: null,
+      isAuthenticated: false,
+      channel: null, // Clear chat state as well
+    });
   },
 }));
 
