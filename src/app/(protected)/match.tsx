@@ -4,43 +4,22 @@ import { View } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
 
 import { MatchCard } from '~/components/match/MatchCard';
-const dummuUsers = [
-  {
-    id: 1,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/1.jpg',
-    name: 'Dani',
-  },
-  {
-    id: 2,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/2.jpg',
-    name: 'Jon',
-  },
-  {
-    id: 3,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/3.jpg',
-    name: 'Dani',
-  },
-  {
-    id: 4,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/4.jpeg',
-    name: 'Alice',
-  },
-  {
-    id: 5,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/5.jpg',
-    name: 'Dani',
-  },
-  {
-    id: 6,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/6.jpg',
-    name: 'Kelsey',
-  },
-];
+import { supabase } from '~/lib/supabase';
+import { AIAgent } from '~/types/AIAgent';
 
 export default function MatchScreen() {
-  const [users, setUsers] = useState(dummuUsers);
+  const [users, setUsers] = useState<AIAgent[]>([]);
   const activeIndex = useSharedValue(0);
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    async function fetchAgents() {
+      const { data } = await supabase.from('ai_agents').select('*');
+      console.log('data: ', data);
+      setUsers(data as AIAgent[]);
+    }
+    fetchAgents();
+  }, []);
 
   useAnimatedReaction(
     () => activeIndex.value,
@@ -51,12 +30,12 @@ export default function MatchScreen() {
     }
   );
 
-  useEffect(() => {
-    if (index > users.length - 3) {
-      console.warn('Last 2 cards remining. Fetch more!');
-      setUsers((usrs) => [...usrs, ...dummuUsers.reverse()]);
-    }
-  }, [index]);
+  //   useEffect(() => {
+  //     if (index > users.length - 3) {
+  //       console.warn('Last 2 cards remining. Fetch more!');
+  //       setUsers((usrs) => [...usrs, ...dummuUsers.reverse()]);
+  //     }
+  //   }, [index]);
 
   const onResponse = (res: boolean) => {
     console.log('on Response: ', res);

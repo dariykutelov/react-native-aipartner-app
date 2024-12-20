@@ -11,14 +11,12 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 
+import { AIAgent } from '~/types/AIAgent';
 const screenWidth = Dimensions.get('screen').width;
 export const tinderCardWidth = screenWidth * 0.9;
 
 type MatchCardType = {
-  user: {
-    image: string;
-    name: string;
-  };
+  user: AIAgent;
   numOfCards: number;
   index: number;
   activeIndex: SharedValue<number>;
@@ -53,7 +51,6 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
   const gesture = Gesture.Pan()
     .onChange((event) => {
       translationX.value = event.translationX;
-
       activeIndex.value = interpolate(Math.abs(translationX.value), [0, 500], [index, index + 0.8]);
     })
     .onEnd((event) => {
@@ -62,7 +59,6 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
           velocity: event.velocityX,
         });
         activeIndex.value = withSpring(index + 1);
-
         runOnJS(onResponse)(event.velocityX > 0);
       } else {
         translationX.value = withSpring(0);
@@ -72,6 +68,7 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View
+        className="bg-black"
         style={[
           styles.card,
           animatedCard,
@@ -79,16 +76,20 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
             zIndex: numOfCards - index,
           },
         ]}>
-        <Image style={[StyleSheet.absoluteFillObject, styles.image]} source={{ uri: user.image }} />
+        <Image
+          className="border-5"
+          style={StyleSheet.absoluteFillObject}
+          source={{ uri: user.imageurl }}
+        />
 
         <LinearGradient
-          // Background Linear Gradient
           colors={['transparent', 'rgba(0,0,0,0.8)']}
           style={[StyleSheet.absoluteFillObject, styles.overlay]}
         />
 
-        <View style={styles.footer}>
-          <Text style={styles.name}>{user.name}</Text>
+        <View className="gap-1 p-5">
+          <Text className="font-InterBold text-3xl text-white">{user.name}</Text>
+          <Text className="font-Inter text-md text-gray-500">{user.personality}</Text>
         </View>
       </Animated.View>
     </GestureDetector>
@@ -98,14 +99,10 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
 const styles = StyleSheet.create({
   card: {
     width: tinderCardWidth,
-    // height: tinderCardWidth * 1.67,
     aspectRatio: 1 / 1.67,
     borderRadius: 15,
     justifyContent: 'flex-end',
-
     position: 'absolute',
-
-    // shadow
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -113,23 +110,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-
     elevation: 3,
-  },
-  image: {
-    borderRadius: 15,
   },
   overlay: {
     top: '50%',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-  },
-  footer: {
-    padding: 10,
-  },
-  name: {
-    fontSize: 24,
-    color: 'white',
-    fontFamily: 'InterBold',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
 });
