@@ -14,6 +14,11 @@ export default function ProtectedLayout() {
           name="index"
           options={{
             title: 'Chats',
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => router.push('/(protected)/match')}>
+                <Ionicons name="search" size={24} color="black" />
+              </TouchableOpacity>
+            ),
             headerRight: () => (
               <TouchableOpacity onPress={() => router.push('/(protected)/profile')}>
                 <Ionicons name="person-circle-outline" size={24} color="black" />
