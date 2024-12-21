@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
@@ -12,6 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { AIAgent } from '~/types/AIAgent';
+import { getImageUrl } from '~/utils/getImageFromSupabaseStorage';
 const screenWidth = Dimensions.get('screen').width;
 export const tinderCardWidth = screenWidth * 0.9;
 
@@ -24,8 +25,23 @@ type MatchCardType = {
 };
 
 export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: MatchCardType) {
-  const translationX = useSharedValue(0);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      try {
+        const {
+          data: { publicUrl },
+        } = await getImageUrl('ai-agent-avatars', user.imageurl);
+        setImageUrl(publicUrl);
+      } catch (error) {
+        console.error('Error fetching image URL:', error);
+      }
+    };
+    fetchImageUrl();
+  }, [user.imageurl]);
+
+  const translationX = useSharedValue(0);
   const animatedCard = useAnimatedStyle(() => ({
     opacity: interpolate(activeIndex.value, [index - 1, index, index + 1], [1 - 1 / 5, 1, 1]),
     transform: [
@@ -76,11 +92,13 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
             zIndex: numOfCards - index,
           },
         ]}>
-        <Image
-          className="border-5"
-          style={StyleSheet.absoluteFillObject}
-          source={{ uri: user.imageurl }}
-        />
+        {imageUrl && (
+          <Image
+            className="rounded-2xl"
+            style={StyleSheet.absoluteFillObject}
+            source={{ uri: imageUrl }}
+          />
+        )}
 
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.8)']}
@@ -89,7 +107,7 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
 
         <View className="gap-1 p-5">
           <Text className="font-InterBold text-3xl text-white">{user.name}</Text>
-          <Text className="font-Inter text-md text-gray-500">{user.personality}</Text>
+          <Text className="font-Inter text-md text-gray-300">{user.personality}</Text>
         </View>
       </Animated.View>
     </GestureDetector>

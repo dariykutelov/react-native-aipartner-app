@@ -9,8 +9,7 @@ export function ControlAIButton({ channel }: { channel: ChannelType }) {
   const channelId = channel.id;
   const { watchers, loading } = useWatchers({ channel });
   const [isAIOn, setIsAIOn] = useState(false);
-  console.log('watchers', watchers);
-  console.log('loading', loading);
+
   useEffect(() => {
     if (watchers) {
       setIsAIOn(watchers.some((watcher) => watcher.startsWith('ai-bot')));
