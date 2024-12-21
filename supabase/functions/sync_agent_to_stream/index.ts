@@ -25,6 +25,7 @@ Deno.serve(async (req) => {
     id: agent.id,
     name: agent.name,
     role: 'admin',
+    isAIAgent: true,
   };
 
   if (agent.imageurl) {
