@@ -71,7 +71,7 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
     })
     .onEnd((event) => {
       if (Math.abs(event.velocityX) > 400) {
-        translationX.value = withSpring(Math.sign(event.velocityX) * 700, {
+        translationX.value = withSpring(Math.sign(event.velocityX) * 900, {
           velocity: event.velocityX,
         });
         activeIndex.value = withSpring(index + 1);

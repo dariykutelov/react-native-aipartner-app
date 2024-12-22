@@ -5,6 +5,7 @@ import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reani
 import { useChatContext } from 'stream-chat-expo';
 
 import { MatchCard } from '~/components/match/MatchCard';
+import { newAIMessage } from '~/http/requests';
 import { supabase } from '~/lib/supabase';
 import useStore from '~/store';
 import { AIAgent } from '~/types/AIAgent';
@@ -70,6 +71,7 @@ export default function MatchScreen() {
       members: [user.id, agent.id],
     });
     channel.watch();
+    newAIMessage(data.id);
   };
 
   return (
