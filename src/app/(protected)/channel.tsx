@@ -2,7 +2,6 @@ import { Redirect, Stack, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Channel, MessageList, MessageInput, AITypingIndicatorView } from 'stream-chat-expo';
 
-import { ControlAIButton } from '~/components/stream/ControlAIButton';
 import { startAI, stopAI } from '~/http/requests';
 import useStore from '~/store';
 

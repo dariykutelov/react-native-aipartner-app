@@ -75,7 +75,11 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
           velocity: event.velocityX,
         });
         activeIndex.value = withSpring(index + 1);
-        runOnJS(onResponse)(event.velocityX > 0);
+
+        // event.velocityX > 0 means swipe right
+        // event.velocityX < 0 means swipe left
+        const isSwipeRight = event.velocityX > 0;
+        runOnJS(onResponse)(isSwipeRight);
       } else {
         translationX.value = withSpring(0);
       }

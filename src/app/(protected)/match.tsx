@@ -9,8 +9,11 @@ import { supabase } from '~/lib/supabase';
 import useStore from '~/store';
 import { AIAgent } from '~/types/AIAgent';
 
+type Gender = 'male' | 'female';
+
 export default function MatchScreen() {
   const [agents, setAgents] = useState<AIAgent[]>([]);
+  const [gender, setGender] = useState<Gender>('female');
   const activeIndex = useSharedValue(0);
   const [index, setIndex] = useState(0);
   const user = useStore((state) => state.user);
@@ -18,11 +21,11 @@ export default function MatchScreen() {
 
   useEffect(() => {
     async function fetchAgents() {
-      const { data } = await supabase.from('ai_agents').select('*');
+      const { data } = await supabase.from('ai_agents').select('*').eq('gender', gender);
       setAgents(data as AIAgent[]);
     }
     fetchAgents();
-  }, []);
+  }, [gender]);
 
   useAnimatedReaction(
     () => activeIndex.value,
@@ -34,18 +37,16 @@ export default function MatchScreen() {
   );
 
   useEffect(() => {
-    //if (index > agents.length - 3) {
-    //console.warn('Last 2 cards remining. Fetch more!');
-    //setAgents((usrs) => [...usrs, ....reverse()]);
-    //}
     if (index === agents.length - 1) {
       console.log('Last card');
-      setIndex(0);
+      // TODO: render buttons exit, start from the beginning
     }
   }, [index]);
 
-  const onMatch = async (res: boolean, agent: AIAgent) => {
-    if (!user) {
+  const onMatch = async (isSwipeRight: boolean, agent: AIAgent) => {
+    console.log('isSwipeRight: ', isSwipeRight);
+
+    if (!user || !isSwipeRight) {
       return;
     }
 
@@ -68,7 +69,6 @@ export default function MatchScreen() {
       name: 'Chat with ' + agent.name,
       members: [user.id, agent.id],
     });
-    console.log('Channel created: ', channel);
     channel.watch();
   };
 
