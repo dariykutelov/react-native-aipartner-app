@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useCreateChatClient, Chat, MessageType } from 'stream-chat-expo';
 
@@ -12,21 +11,10 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
     apiKey: process.env.EXPO_PUBLIC_STREAM_API_KEY!,
     tokenOrProvider: getStreamToken,
     userData: {
-      id: user?.id || '14', // Make sure this matches the user_id in your token
+      id: user?.id || '14',
       name: user?.email || 'Anonymous',
     },
   });
-
-  useEffect(() => {
-    if (!client) {
-      return;
-    }
-    const channel = client.channel('messaging', 'mychat2', {
-      name: 'MyChat',
-      members: [user?.id || '14'],
-    });
-    channel.watch();
-  }, [client]);
 
   if (!client) {
     return (

@@ -1,6 +1,7 @@
-import { Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
 import { useChatContext } from 'stream-chat-expo';
 
@@ -11,14 +12,15 @@ import useStore from '~/store';
 import { AIAgent } from '~/types/AIAgent';
 
 type Gender = 'male' | 'female';
+const gender: Gender = 'female';
 
 export default function MatchScreen() {
   const [agents, setAgents] = useState<AIAgent[]>([]);
-  const [gender, setGender] = useState<Gender>('female');
   const activeIndex = useSharedValue(0);
   const [index, setIndex] = useState(0);
   const user = useStore((state) => state.user);
   const { client } = useChatContext();
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchAgents() {
@@ -37,16 +39,7 @@ export default function MatchScreen() {
     }
   );
 
-  useEffect(() => {
-    if (index === agents.length - 1) {
-      console.log('Last card');
-      // TODO: render buttons exit, start from the beginning
-    }
-  }, [index]);
-
   const onMatch = async (isSwipeRight: boolean, agent: AIAgent) => {
-    console.log('isSwipeRight: ', isSwipeRight);
-
     if (!user || !isSwipeRight) {
       return;
     }
@@ -70,23 +63,56 @@ export default function MatchScreen() {
       name: 'Chat with ' + agent.name,
       members: [user.id, agent.id],
     });
+    console.log('Channel: ', channel);
     channel.watch();
     newAIMessage(data.id);
   };
 
+  const resetCards = () => {
+    activeIndex.value = 0;
+    setIndex(0);
+  };
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Stack.Screen options={{ headerShown: false }} />
-      {agents.map((agent, index) => (
-        <MatchCard
-          key={`${agent.id}-${index}`}
-          user={agent}
-          numOfCards={agents.length}
-          index={index}
-          activeIndex={activeIndex}
-          onResponse={(res) => onMatch(res, agent)}
-        />
-      ))}
+    <View className="flex-1 bg-gray-50">
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.push('/(protected)')} className="ml-4">
+              <Ionicons name="arrow-back" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: '#f9fafb',
+          },
+          headerShadowVisible: false,
+        }}
+      />
+      {index === agents.length - 1 ? (
+        <View className="flex-1 items-center justify-center gap-4">
+          <TouchableOpacity
+            onPress={resetCards}
+            className="flex-row items-center gap-2 rounded-full bg-black px-6 py-3">
+            <Ionicons name="refresh" size={24} color="white" />
+            <Text className="font-InterBold text-white">Start Over</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View className="mb-10 flex-1 items-center justify-center">
+          {agents.map((agent, index) => (
+            <MatchCard
+              key={`${agent.id}-${index}`}
+              user={agent}
+              numOfCards={agents.length}
+              index={index}
+              activeIndex={activeIndex}
+              onResponse={(res) => onMatch(res, agent)}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }

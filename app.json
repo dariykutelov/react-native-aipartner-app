@@ -32,7 +32,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.kutelov.aipartner",
       "usesAppleSignIn": true
     },
