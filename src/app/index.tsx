@@ -29,6 +29,6 @@ export default function Home() {
       return <Redirect href="/(auth)/signin" />;
     }
   } else {
-    return <Redirect href="/(protected)" />;
+    return <Redirect href="/(auth)/gender" />;
   }
 }

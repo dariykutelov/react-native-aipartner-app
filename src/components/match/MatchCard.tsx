@@ -121,8 +121,8 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
 const styles = StyleSheet.create({
   card: {
     width: tinderCardWidth,
-    aspectRatio: 1 / 1.67,
-    borderRadius: 15,
+    aspectRatio: 1,
+    borderRadius: tinderCardWidth / 2,
     justifyContent: 'flex-end',
     position: 'absolute',
     shadowColor: '#000',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     top: '50%',
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
+    borderBottomLeftRadius: tinderCardWidth / 2,
+    borderBottomRightRadius: tinderCardWidth / 2,
   },
 });

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Stack, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { Stack, useRouter, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
 import { useChatContext } from 'stream-chat-expo';
@@ -10,9 +10,7 @@ import { newAIMessage } from '~/http/requests';
 import { supabase } from '~/lib/supabase';
 import useStore from '~/store';
 import { AIAgent } from '~/types/AIAgent';
-
-type Gender = 'male' | 'female';
-const gender: Gender = 'female';
+import { getStoredGender } from '~/utils/genderStorage';
 
 export default function MatchScreen() {
   const [agents, setAgents] = useState<AIAgent[]>([]);
@@ -22,13 +20,19 @@ export default function MatchScreen() {
   const { client } = useChatContext();
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchAgents() {
-      const { data } = await supabase.from('ai_agents').select('*').eq('gender', gender);
-      setAgents(data as AIAgent[]);
-    }
-    fetchAgents();
-  }, [gender]);
+  useFocusEffect(
+    useCallback(() => {
+      async function loadAgents() {
+        const storedGender = await getStoredGender();
+        const { data } = await supabase.from('ai_agents').select('*').eq('gender', storedGender);
+        setAgents(data as AIAgent[]);
+        // Reset cards position when loading new agents
+        activeIndex.value = 0;
+        setIndex(0);
+      }
+      loadAgents();
+    }, [])
+  );
 
   useAnimatedReaction(
     () => activeIndex.value,
@@ -74,18 +78,18 @@ export default function MatchScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-black">
       <Stack.Screen
         options={{
           headerShown: true,
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.push('/(protected)')} className="ml-4">
-              <Ionicons name="arrow-back" size={24} color="black" />
+              <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
           ),
           headerTitle: '',
           headerStyle: {
-            backgroundColor: '#f9fafb',
+            backgroundColor: 'black',
           },
           headerShadowVisible: false,
         }}
@@ -94,9 +98,9 @@ export default function MatchScreen() {
         <View className="flex-1 items-center justify-center gap-4">
           <TouchableOpacity
             onPress={resetCards}
-            className="flex-row items-center gap-2 rounded-full bg-black px-6 py-3">
-            <Ionicons name="refresh" size={24} color="white" />
-            <Text className="font-InterBold text-white">Start Over</Text>
+            className="flex-row items-center gap-2 rounded-full bg-white px-6 py-3">
+            <Ionicons name="refresh" size={24} color="black" />
+            <Text className="font-InterBold text-black">Start Over</Text>
           </TouchableOpacity>
         </View>
       ) : (
