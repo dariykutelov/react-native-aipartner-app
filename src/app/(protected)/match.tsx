@@ -70,6 +70,8 @@ export default function MatchScreen() {
     console.log('Channel: ', channel);
     channel.watch();
     newAIMessage(data.id);
+
+    router.push('/channel');
   };
 
   const resetCards = () => {
@@ -78,18 +80,19 @@ export default function MatchScreen() {
   };
 
   return (
-    <View className="flex-1 bg-black">
+    <View className="flex-1 bg-gray-900">
       <Stack.Screen
         options={{
           headerShown: true,
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.push('/(protected)')} className="ml-4">
-              <Ionicons name="arrow-back" size={24} color="white" />
+              <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
           ),
           headerTitle: '',
           headerStyle: {
-            backgroundColor: 'black',
+            // backgroundColor: '#111827',
+            backgroundColor: 'white',
           },
           headerShadowVisible: false,
         }}
@@ -104,7 +107,7 @@ export default function MatchScreen() {
           </TouchableOpacity>
         </View>
       ) : (
-        <View className="mb-10 flex-1 items-center justify-center">
+        <View className="mb-14 flex-1 items-center justify-center">
           {agents.map((agent, index) => (
             <MatchCard
               key={`${agent.id}-${index}`}

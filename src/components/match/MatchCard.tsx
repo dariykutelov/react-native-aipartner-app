@@ -30,9 +30,7 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
   useEffect(() => {
     const fetchImageUrl = async () => {
       try {
-        const {
-          data: { publicUrl },
-        } = await getImageUrl('ai-agent-avatars', user.imageurl);
+        const publicUrl = await getImageUrl('ai-agent-avatars', user.imageurl);
         setImageUrl(publicUrl);
       } catch (error) {
         console.error('Error fetching image URL:', error);
@@ -98,21 +96,27 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
         ]}>
         {imageUrl && (
           <Image
-            className="rounded-2xl"
-            style={StyleSheet.absoluteFillObject}
+            className="rounded-full"
+            style={[StyleSheet.absoluteFillObject, { borderRadius: tinderCardWidth / 2 }]}
             source={{ uri: imageUrl }}
           />
         )}
 
         <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.8)']}
-          style={[StyleSheet.absoluteFillObject, styles.overlay]}
+          colors={['transparent', 'rgba(255,255,255,0.3)']}
+          style={[
+            StyleSheet.absoluteFillObject,
+            styles.overlay,
+            { borderRadius: tinderCardWidth / 2 },
+          ]}
         />
 
-        <View className="gap-1 p-5">
-          <Text className="font-InterBold text-3xl text-white">{user.name}</Text>
-          <Text className="font-Inter text-md text-gray-300">{user.personality}</Text>
-        </View>
+        {index === Math.floor(activeIndex.value) && (
+          <View className="absolute -bottom-20 left-0 right-0 gap-1 p-5">
+            <Text className="font-InterBold text-3xl text-white">{user.name}</Text>
+            <Text className="font-Inter text-md text-gray-300">{user.personality}</Text>
+          </View>
+        )}
       </Animated.View>
     </GestureDetector>
   );
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: tinderCardWidth / 2,
     justifyContent: 'flex-end',
     position: 'absolute',
-    shadowColor: '#000',
+    shadowColor: '#fff',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -135,7 +139,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   overlay: {
-    top: '50%',
+    top: '0%',
     borderBottomLeftRadius: tinderCardWidth / 2,
     borderBottomRightRadius: tinderCardWidth / 2,
   },

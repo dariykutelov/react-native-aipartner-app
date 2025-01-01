@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Redirect, Stack, useFocusEffect, useRouter } from 'expo-router';
-import { Alert, TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Channel, MessageList, MessageInput, AITypingIndicatorView } from 'stream-chat-expo';
 
@@ -71,7 +71,9 @@ export default function ChannelScreen() {
         <Channel channel={channel}>
           <MessageList />
           <AITypingIndicatorView />
-          <MessageInput />
+          <View className="bg-white">
+            <MessageInput />
+          </View>
         </Channel>
       </SafeAreaView>
     </>
