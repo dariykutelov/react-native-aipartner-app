@@ -80,7 +80,7 @@ export default function MatchScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-900">
+    <View className="flex-1 bg-white">
       <Stack.Screen
         options={{
           headerShown: true,
@@ -97,7 +97,7 @@ export default function MatchScreen() {
           headerShadowVisible: false,
         }}
       />
-      {index === agents.length - 1 ? (
+      {index === agents.length ? (
         <View className="flex-1 items-center justify-center gap-4">
           <TouchableOpacity
             onPress={resetCards}
@@ -107,7 +107,7 @@ export default function MatchScreen() {
           </TouchableOpacity>
         </View>
       ) : (
-        <View className="mb-14 flex-1 items-center justify-center">
+        <View className="mb-20 flex-1 items-center justify-center">
           {agents.map((agent, index) => (
             <MatchCard
               key={`${agent.id}-${index}`}
