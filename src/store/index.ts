@@ -10,7 +10,6 @@ type State = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  isOnboardingComplete: boolean;
 };
 
 type Actions = {
@@ -30,7 +29,6 @@ const useStore = create<State & Actions>((set) => ({
   user: null,
   isAuthenticated: false,
   isLoading: true,
-  isOnboardingComplete: false,
   // Auth actions
   setSession: (session) =>
     set({

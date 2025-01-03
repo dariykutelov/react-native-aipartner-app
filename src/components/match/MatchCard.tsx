@@ -142,11 +142,11 @@ export function MatchCard({ user, numOfCards, index, activeIndex, onResponse }: 
                 className="absolute -bottom-14 left-0 right-0 flex-row items-center justify-between gap-12">
                 <View className="items-center">
                   <Ionicons name="close" size={32} color="red" />
-                  <Text className="text-red-500">Swipe Left</Text>
+                  <Text className="text-gray-700">Swipe Left</Text>
                 </View>
                 <View className="items-center">
                   <Ionicons name="checkmark" size={32} color="green" />
-                  <Text className="text-green-500">Swipe Right</Text>
+                  <Text className="text-gray-700">Swipe Right</Text>
                 </View>
               </Animated.View>
             )}

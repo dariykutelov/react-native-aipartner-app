@@ -16,7 +16,7 @@ export default function Profile() {
 
   const loadGender = async () => {
     const gender = await getStoredGender();
-    setSelectedGender(gender);
+    setSelectedGender(gender || 'female');
   };
 
   const handleGenderChange = async (gender: Gender) => {
@@ -65,7 +65,7 @@ export default function Profile() {
 
         <View className="mb-4 mt-auto px-6">
           <TouchableOpacity className="rounded-lg bg-black p-4" onPress={handleSignOut}>
-            <Text className="text-center text-white">Sign Out</Text>
+            <Text className="text-center text-lg font-bold text-white">Sign Out</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,20 +1,27 @@
-import { Redirect, RelativePathString } from 'expo-router';
-import { useEffect } from 'react';
+import { Redirect } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 
 import useStore from '~/store';
+import { getStoredGender } from '~/utils/genderStorage';
 
 export default function Home() {
   const session = useStore((state) => state.session);
   const initializeAuth = useStore((state) => state.initializeAuth);
   const isLoading = useStore((state) => state.isLoading);
-  const isOnboardingComplete = useStore((state) => state.isOnboardingComplete);
+  const [hasGender, setHasGender] = useState<boolean | null>(null);
 
   useEffect(() => {
     initializeAuth();
+    checkGender();
   }, [initializeAuth]);
 
-  if (isLoading) {
+  const checkGender = async () => {
+    const gender = await getStoredGender();
+    setHasGender(!!gender);
+  };
+
+  if (isLoading || hasGender === null) {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator />
@@ -23,10 +30,10 @@ export default function Home() {
   }
 
   if (!session) {
-    if (!isOnboardingComplete) {
-      return <Redirect href={'/(auth)/onboarding' as RelativePathString} />;
+    if (!hasGender) {
+      return <Redirect href="/onboarding" />;
     } else {
-      return <Redirect href="/(auth)/signin" />;
+      return <Redirect href="/signin" />;
     }
   } else {
     return <Redirect href="/(protected)" />;

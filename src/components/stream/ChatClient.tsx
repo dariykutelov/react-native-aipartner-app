@@ -2,7 +2,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { useCreateChatClient, Chat, MessageType } from 'stream-chat-expo';
 
 import useStore from '~/store';
-import { getStreamToken } from '~/utils/strem';
+import { getStreamToken } from '~/utils/stream';
 
 export default function ChatClient({ children }: { children: React.ReactNode }) {
   const user = useStore((state) => state.user);
